@@ -1,14 +1,15 @@
 <script>
   import Star from './components/Star.svelte';
   export let config = {
+		readOnly: false,
     countStars: 5,
     range: {min: 0, max: 5, step: 0.001},
-    score: 3.7,
+    score: 0.0,
     showScore: true,
     starConfig: {
       size: 30,
-      fillColor: 'yellow',
-      strokeColor: "#000"
+      fillColor: '#F9ED4F',
+      strokeColor: "#BB8511"
     }
   }
 </script>
@@ -18,21 +19,20 @@
     <div class="stars">
       {#each Array(config.countStars) as star, id}
         {#if parseInt(config.score) == id}
-          <Star {id} starConfig={config.starConfig} fillPercentage={config.score - parseInt(config.score)}/>
+          <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={config.score - parseInt(config.score)}/>
         {:else}
           {#if parseInt(config.score) > id}
-            <Star {id} starConfig={config.starConfig} fillPercentage={1}/>
+            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={1}/>
           {:else}
-            <Star {id} starConfig={config.starConfig} fillPercentage={0}/>
+            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={0}/>
           {/if}
         {/if}
       {/each}
     </div>
-    <input class="slider" type="range" min={config.range.min} max={config.range.max} step="0.001" bind:value={config.score}>
+    <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="0.001" bind:value={config.score}>
   </div>
-  {#if config.showScore}<span class="score" style="font-size: {config.starConfig.size/1.5}px;">({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)</span>{/if}
+  {#if config.showScore}<span class="show-score" style="font-size: {config.starConfig.size/2}px;">({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)</span>{/if}
 </section>
-
 
 <style>
   .stars-container{
@@ -60,5 +60,9 @@
     right: 0;
     left: 0;
     height: 100%;
+  }
+  .show-score{
+    user-select: none;
+    color: #888
   }
 </style>

@@ -1,5 +1,5 @@
 {
-  "name": "@ernane/svelte-star-ratting",
+  "name": "@ernane/svelte-star-rating",
   "version": "1.0.0",
   "description": "Simple component to assign scores based on stars.",
   "main": "dist/index.js",
