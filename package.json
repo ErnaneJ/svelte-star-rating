@@ -1,0 +1,25 @@
+{
+  "name": "@ernane/svelte-star-ratting",
+  "version": "1.0.0",
+  "description": "Simple component to assign scores based on stars.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "src/index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "svelte",
+    "star",
+    "ratting"
+  ],
+  "author": "ernane <ernane.junior25@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^2.39.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-svelte": "^7.1.0",
+    "svelte": "^3.32.3"
+  }
+}
