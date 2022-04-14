@@ -18,6 +18,8 @@
 
 Simples componente Svelte, sem dependências, para implementação e captura de avaliação por meio de uma interface simples e intuitiva que te leva às etrelas.
 
+[Veja essa demonstração! ](https://svelte.dev/repl/672b083a2ce346a6aae6f07d9e3787f4?version=3.47.0)
+
 ## 📦 Instalação
 
   ```bash
