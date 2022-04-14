@@ -1,6 +1,6 @@
 {
   "name": "@ernane/svelte-star-rating",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Simple component to assign scores based on stars.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

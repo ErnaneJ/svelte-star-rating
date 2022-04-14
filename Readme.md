@@ -4,7 +4,7 @@
 
 <div align="center">
   <a href="#-Projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Instalacao">Instalacao</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Instalacao">Instalação</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-Features">Features</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-Use">Use</a>&nbsp;&nbsp;&nbsp;
 </div>
@@ -16,7 +16,7 @@
 
 ## 💻 Projeto
 
-Simples componente Svelte, sem dependências, para implementação e captura de avaliação por meio de uma interface simples e intuitiva que te leva às etrelas.
+Simples componente Svelte, sem dependências, para implementação e captura de avaliações por meio de uma interface simples e intuitiva que te levará às etrelas.
 
 [Veja essa demonstração! ](https://svelte.dev/repl/672b083a2ce346a6aae6f07d9e3787f4?version=3.47.0)
 
@@ -26,7 +26,7 @@ Simples componente Svelte, sem dependências, para implementação e captura de 
   $ npm install @ernane/svelte-star-rating # => or yarn
   ```
 
-⚠️ se estiver utilizando SvelteKit ou Sapper, instále-o como uma dependência de desenvolvimento:
+⚠️ se estiver utilizando [SvelteKit](https://kit.svelte.dev/) ou [Sapper](https://sapper.svelte.dev/), é aconselhado instalar como uma dependência de desenvolvimento:
 
   ```bash
   $ npm install @ernane/svelte-star-rating --save-dev # => or yarn
@@ -36,7 +36,7 @@ Simples componente Svelte, sem dependências, para implementação e captura de 
 
 Este pacote exporta um componente svelte que pode, ou não, receber um objeto de configuração com os seguintes atributos.
 
-- Configurações Gerais
+- ⚙️ Configurações Gerais
 
 | atributo  | tipo de dado | requerido | valor padrão |
 |:---------:|:------------:|:---------:|:------------:|
@@ -47,7 +47,7 @@ Este pacote exporta um componente svelte que pode, ou não, receber um objeto de
 
 Além disso, temos outros dois atributos aninhados que espessificam configurações distintas.
 
-- Range
+- 📏 Range
   
 |  atributo  | tipo de dado | requerido | valor padrão |
 |:----------:|:------------:|:---------:|:------------:|
@@ -55,7 +55,7 @@ Além disso, temos outros dois atributos aninhados que espessificam configuraç�
 |     max    |   `integer`  |    não    |      5       |
 |    step    |    `float`   |    não    |    0.001     |
 
-- Star Config:
+- ⭐ Star Config:
 
 |   atributo  | tipo de dado | requerido | valor padrão |
 |:-----------:|:------------:|:---------:|:------------:|
