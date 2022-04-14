@@ -45,7 +45,7 @@ Este pacote exporta um componente svelte que pode, ou não, receber um objeto de
 | score     |   `float`    |    não    |     0.0      |
 | showScore |   `bool`     |    não    |     true     |
 
-Além disso, temos outros dois atributos aninhados que espessificam configurações distintas.
+Além disso, temos outros dois atributos aninhados que especificam configurações distintas.
 
 - 📏 Range
   
