@@ -11,7 +11,7 @@
 
 <p align="center">
   <p align="center">
-  <img alt="preview star rating" src="./.github/preview.png" width="90%">
+  <img alt="preview star rating" src="https://raw.githubusercontent.com/ErnaneJ/svelte-star-rating/master/.github/preview.png" width="90%">
 </p>
 
 ## 💻 Projeto
@@ -106,7 +106,7 @@ const config = {
   ```
 
 
-_Se voce desejar implementar ou melhorar alguma feature fique avontade para enviar uma solicitacao de pull. Adorarei receber!_
+_Se você desejar implementar ou melhorar alguma feature fique à vontade para enviar uma solicitacao de pull. Adorarei receber!_
 
 ---
 

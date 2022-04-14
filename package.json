@@ -9,10 +9,20 @@
     "build": "rollup -c",
     "dev": "rollup -c -w"
   },
+  "homepage": "https://github.com/ErnaneJ/svelte-star-rating",
+  "bugs": {
+    "url": "https://github.com/ErnaneJ/svelte-star-rating/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErnaneJ/svelte-star-rating.git"
+  },
   "keywords": [
     "svelte",
     "star",
-    "ratting"
+    "ratting",
+    "component",
+    "sapper"
   ],
   "author": "ernane <ernane.junior25@gmail.com>",
   "license": "MIT",
