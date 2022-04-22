@@ -1,5 +1,5 @@
 <h1 align="center">
-   ✨ Svete Star Rating ✨
+   ✨ Svelte Star Rating ✨
 </h1>
 
 <div align="center">
