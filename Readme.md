@@ -3,8 +3,8 @@
 </h1>
 
 <div align="center">
-  <a href="#-Projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Instalacao">Instalação</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Project">Project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  <a href="#-Installation">Installation</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-Features">Features</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
   <a href="#-Use">Use</a>&nbsp;&nbsp;&nbsp;
 </div>
@@ -14,19 +14,19 @@
   <img alt="preview star rating" src="https://raw.githubusercontent.com/ErnaneJ/svelte-star-rating/master/.github/preview.png" width="90%">
 </p>
 
-## 💻 Projeto
+## 💻 Project
 
-Simples componente Svelte, sem dependências, para implementação e captura de avaliações por meio de uma interface simples e intuitiva que te levará às etrelas.
+Simple Svelte component, with no dependencies, for implementing and capturing assessments through a simple and intuitive interface that will take you to the stars.
 
-[Veja essa demonstração! ](https://svelte.dev/repl/672b083a2ce346a6aae6f07d9e3787f4?version=3.47.0)
+[See this demo!! ](https://svelte.dev/repl/672b083a2ce346a6aae6f07d9e3787f4?version=3.47.0)
 
-## 📦 Instalação
+## 📦 Installation
 
   ```bash
   $ npm install @ernane/svelte-star-rating # => or yarn
   ```
 
-⚠️ se estiver utilizando [SvelteKit](https://kit.svelte.dev/) ou [Sapper](https://sapper.svelte.dev/), é aconselhado instalar como uma dependência de desenvolvimento:
+⚠️ if using [SvelteKit](https://kit.svelte.dev/) or [Sapper](https://sapper.svelte.dev/), it is advised to install as a development dependency:
 
   ```bash
   $ npm install @ernane/svelte-star-rating --save-dev # => or yarn
@@ -34,36 +34,36 @@ Simples componente Svelte, sem dependências, para implementação e captura de 
 
 ### 📁 Features
 
-Este pacote exporta um componente svelte que pode, ou não, receber um objeto de configuração com os seguintes atributos.
+This package will add a svelte component that may or may not receive a configuration object with the following attributes shown below.
 
-- ⚙️ Configurações Gerais
+- ⚙️ General Settings
 
-| atributo  | tipo de dado | requerido | valor padrão |
+| Attribute |   Data Type  | Required  |    Default   |
 |:---------:|:------------:|:---------:|:------------:|
 | readOnly  |   `bool`     |    não    |     false    |
 | countStars|   `integer`  |    não    |     5        |
 | score     |   `float`    |    não    |     0.0      |
 | showScore |   `bool`     |    não    |     true     |
 
-Além disso, temos outros dois atributos aninhados que especificam configurações distintas.
+In addition, we have two other nested attributes that specify distinct settings.
 
 - 📏 Range
   
-|  atributo  | tipo de dado | requerido | valor padrão |
+| Attribute  |   Data Type  | Required  |    Default   |
 |:----------:|:------------:|:---------:|:------------:|
 |     min    |   `integer`  |    não    |      0       |
 |     max    |   `integer`  |    não    |      5       |
 |    step    |    `float`   |    não    |    0.001     |
 
-- ⭐ Star Config:
+- ⭐ Setting of the Stars:
 
-|   atributo  | tipo de dado | requerido | valor padrão |
+|  Attribute  |   Data Type  | Required  |    Default   |
 |:-----------:|:------------:|:---------:|:------------:|
 | size        |   `integer`  |    não    |      30      |
 | fillColor   |   `String`   |    não    |    #F9ED4F   |
 | strokeColor |   `String`   |    não    |    #BB8511   | 
 
-Ao final, o objeto de configuração será semelhante ao mostrado abaixo.
+In the end, the configuration object will be similar to the one shown below.
 
 ```js
 const config = {
@@ -86,30 +86,29 @@ const config = {
 
 ## 💡 Use
 
-- Importe o componente
+- Import the component
 
   ```js
   import StarRatting from "@ernane/svelte-star-rating";
   ```
 
-- Crie o objeto de configuração
+- Create the configuration object
 
   ```js
   const config = { ... }
   ```
-  <small>**Como mostrado na seção anterior</small>
+  <small>**As shown in the previous section</small>
 
-- Por fim, utilize-o!
+- Finally, use it! 🎉
 
   ```js
   <StarRatting {config}/>
   ```
 
-
-_Se você desejar implementar ou melhorar alguma feature fique à vontade para enviar uma solicitacao de pull. Adorarei receber!_
+_If you would like to implement or improve any feature feel free to submit a pull request. I would love to receive!_
 
 ---
 
 <div align="center">
-  Desenvolvido com ❤ por <a target="_blank" href="https://www.ernane.dev/">Ernane Ferreira</a>. 👋🏻
+  Developed with ❤ by <a target="_blank" href="https://links.ernane.dev/">Ernane Ferreira</a>. 👋🏻
 </div>
