@@ -10,8 +10,8 @@
       size: 30,
       fillColor: '#F9ED4F',
       strokeColor: "#BB8511",
-      unfilledColor: '#ff0000',
-      strokeUnfilledColor: '#B42'
+      unfilledColor: '#FFF',
+      strokeUnfilledColor: '#000'
     }
   }
 </script>
