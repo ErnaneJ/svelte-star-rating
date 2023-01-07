@@ -9,7 +9,9 @@
     starConfig: {
       size: 30,
       fillColor: '#F9ED4F',
-      strokeColor: "#BB8511"
+      strokeColor: "#BB8511",
+      unfilledColor: '#FFF',
+      strokeUnfilledColor: '#000'
     }
   }
 </script>
