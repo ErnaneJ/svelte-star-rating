@@ -40,10 +40,10 @@ This package will add a svelte component that may or may not receive a configura
 
 | Attribute |   Data Type  | Required  |    Default   |
 |:---------:|:------------:|:---------:|:------------:|
-| readOnly  |   `bool`     |    não    |     false    |
-| countStars|   `integer`  |    não    |     5        |
-| score     |   `float`    |    não    |     0.0      |
-| showScore |   `bool`     |    não    |     true     |
+| readOnly  |   `bool`     |    false    |     false    |
+| countStars|   `integer`  |    false    |     5        |
+| score     |   `float`    |    false    |     0.0      |
+| showScore |   `bool`     |    false    |     true     |
 
 In addition, we have two other nested attributes that specify distinct settings.
 
@@ -51,17 +51,19 @@ In addition, we have two other nested attributes that specify distinct settings.
   
 | Attribute  |   Data Type  | Required  |    Default   |
 |:----------:|:------------:|:---------:|:------------:|
-|     min    |   `integer`  |    não    |      0       |
-|     max    |   `integer`  |    não    |      5       |
-|    step    |    `float`   |    não    |    0.001     |
+|     min    |   `integer`  |    false    |      0       |
+|     max    |   `integer`  |    false    |      5       |
+|    step    |    `float`   |    false    |    0.001     |
 
 - ⭐ Setting of the Stars:
 
-|  Attribute  |   Data Type  | Required  |    Default   |
-|:-----------:|:------------:|:---------:|:------------:|
-| size        |   `integer`  |    não    |      30      |
-| fillColor   |   `String`   |    não    |    #F9ED4F   |
-| strokeColor |   `String`   |    não    |    #BB8511   | 
+|      Attribute      |   Data Type  |  Required   |    Default   |
+|:-------------------:|:------------:|:-----------:|:------------:|
+| size                |   `integer`  |    false    |      30      |
+| fillColor           |   `String`   |    false    |    #F9ED4F   |
+| strokeColor         |   `String`   |    false    |    #BB8511   | 
+| unfilledColor       |   `String`   |    false    |     #FFF     | 
+| strokeUnfilledColor |   `String`   |    false    |     #000     | 
 
 In the end, the configuration object will be similar to the one shown below.
 
@@ -79,10 +81,20 @@ const config = {
   starConfig: {
     size: 30,
     fillColor: '#F9ED4F',
-    strokeColor: "#BB8511"
+    strokeColor: "#BB8511",
+    unfilledColor: '#FFF',
+    strokeUnfilledColor: '#000'
   }
 }
 ```
+
+- 🎯 Events
+
+In addition, it is also possible to observe events of the component itself that will be executed in an internal element from a defined action. Below are the available events.
+
+|         Type        |       Target      |  Required   |    Default   |
+|:-------------------:|:-----------------:|:-----------:|:------------:|
+|       change        |   `input.slider`  |    false    |      null    |
 
 ## 💡 Use
 
