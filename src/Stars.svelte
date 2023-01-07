@@ -29,7 +29,7 @@
         {/if}
       {/each}
     </div>
-    <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score}>
+    <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
   </div>
   {#if config.showScore}<span class="show-score" style="font-size: {config.starConfig.size/2}px;">({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)</span>{/if}
 </section>
