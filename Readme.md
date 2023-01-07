@@ -11,7 +11,7 @@
 
 <p align="center">
   <p align="center">
-  <img alt="preview star rating" src="https://raw.githubusercontent.com/ErnaneJ/svelte-star-rating/master/.github/preview.png" width="90%">
+  <img alt="preview star rating" src="https://raw.githubusercontent.com/ErnaneJ/svelte-star-rating/master/.github/preview.png" width="50%">
 </p>
 
 ## 💻 Project
