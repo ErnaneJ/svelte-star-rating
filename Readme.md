@@ -101,7 +101,7 @@ In addition, it is also possible to observe events of the component itself that 
 - Import the component
 
   ```js
-  import StarRatting from "@ernane/svelte-star-rating";
+  import StarRating from "@ernane/svelte-star-rating";
   ```
 
 - Create the configuration object
@@ -114,7 +114,7 @@ In addition, it is also possible to observe events of the component itself that 
 - Finally, use it! 🎉
 
   ```js
-  <StarRatting {config}/>
+  <StarRating {config}/>
   ```
 
 _If you would like to implement or improve any feature feel free to submit a pull request. I would love to receive!_
