@@ -1,19 +1,22 @@
 <script>
-  import Star from './components/Star.svelte';
+  import Star from "./components/Star.svelte";
   export let config = {
-		readOnly: false,
+    readOnly: false,
     countStars: 5,
-    range: {min: 0, max: 5, step: 0.001},
+    range: { min: 0, max: 5, step: 0.001 },
     score: 0.0,
-    showScore: true,
+    showScore: false,
+    get scoreFormat() {
+      return `${parseFloat((this.score / this.countStars) * 100).toFixed(2)}%`;
+    },
     starConfig: {
       size: 30,
-      fillColor: '#F9ED4F',
+      fillColor: "#F9ED4F",
       strokeColor: "#BB8511",
-      unfilledColor: '#FFF',
-      strokeUnfilledColor: '#000'
-    }
-  }
+      unfilledColor: "#FFF",
+      strokeUnfilledColor: "#000",
+    },
+  };
 </script>
 
 <section class="stars-container">
@@ -21,39 +24,65 @@
     <div class="stars">
       {#each Array(config.countStars) as star, id}
         {#if parseInt(config.score) == id}
-          <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={config.score - parseInt(config.score)}/>
+          <Star
+            {id}
+            readOnly={config.readOnly}
+            starConfig={config.starConfig}
+            fillPercentage={config.score - parseInt(config.score)}
+          />
+        {:else if parseInt(config.score) > id}
+          <Star
+            {id}
+            readOnly={config.readOnly}
+            starConfig={config.starConfig}
+            fillPercentage={1}
+          />
         {:else}
-          {#if parseInt(config.score) > id}
-            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={1}/>
-          {:else}
-            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={0}/>
-          {/if}
+          <Star
+            {id}
+            readOnly={config.readOnly}
+            starConfig={config.starConfig}
+            fillPercentage={0}
+          />
         {/if}
       {/each}
     </div>
-    <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
+    <input
+      class="slider"
+      disabled={config.readOnly}
+      type="range"
+      min={config.range.min}
+      max={config.range.max}
+      step={config.range.step}
+      bind:value={config.score}
+      on:change
+    />
   </div>
-  {#if config.showScore}<span class="show-score" style="font-size: {config.starConfig.size/2}px;">({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)</span>{/if}
+  {#if config.showScore}
+    <span class="show-score" style="font-size: {config.starConfig.size / 2}px;">
+      ({config.scoreFormat})
+    </span>
+  {/if}
 </section>
 
 <style>
-  .stars-container{
+  .stars-container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
+    gap: 0.5rem;
   }
-  .range-stars{
+  .range-stars {
     position: relative;
   }
-  .stars{
+  .stars {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: .5rem;
+    gap: 0.5rem;
   }
-  .slider{
+  .slider {
     opacity: 0;
     cursor: pointer;
     position: absolute;
@@ -63,8 +92,8 @@
     left: 0;
     height: 100%;
   }
-  .show-score{
+  .show-score {
     user-select: none;
-    color: #888
+    color: #888;
   }
 </style>
