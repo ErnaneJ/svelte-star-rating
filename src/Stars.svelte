@@ -22,18 +22,24 @@
       {#each Array(config.countStars) as star, id}
         {#if parseInt(config.score) == id}
           <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={config.score - parseInt(config.score)}/>
+        {:else if parseInt(config.score) > id}
+          <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={1}/>
         {:else}
-          {#if parseInt(config.score) > id}
-            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={1}/>
-          {:else}
-            <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={0}/>
-          {/if}
+          <Star {id} readOnly={config.readOnly} starConfig={config.starConfig} fillPercentage={0}/>
         {/if}
       {/each}
     </div>
     <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
   </div>
-  {#if config.showScore}<span class="show-score" style="font-size: {config.starConfig.size/2}px;">({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)</span>{/if}
+  {#if config.showScore}
+    <span class="show-score" style="font-size: {config.starConfig.size/2}px;">
+      {#if config.scoreFormat}
+        {config.scoreFormat()}
+      {:else}
+        ({parseFloat((config.score/config.countStars)*100).toFixed(2)}%)
+      {/if}
+    </span>
+  {/if}
 </section>
 
 <style>
