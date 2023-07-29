@@ -38,12 +38,13 @@ This package will add a svelte component that may or may not receive a configura
 
 - ⚙️ General Settings
 
-| Attribute |   Data Type  | Required  |    Default   |
-|:---------:|:------------:|:---------:|:------------:|
-| readOnly  |   `bool`     |    false    |     false    |
-| countStars|   `integer`  |    false    |     5        |
-| score     |   `float`    |    false    |     0.0      |
-| showScore |   `bool`     |    false    |     true     |
+| Attribute  |   Data Type  | Required    |    Default   |
+|:----------:|:------------:|:-----------:|:------------:|
+| readOnly   |   `bool`     |    false    |     false    |
+| countStars |   `integer`  |    false    |     5        |
+| score      |   `float`    |    false    |     0.0      |
+| showScore  |   `bool`     |    false    |     true     |
+| scoreFormat|   `function` |    false    |    precent   |
 
 In addition, we have two other nested attributes that specify distinct settings.
 
@@ -78,6 +79,7 @@ const config = {
   },
   score: 0.0,
   showScore: true,
+  scoreFormat: function(){ return `(${this.score.toFixed(0)}/${this.countStars})` },
   starConfig: {
     size: 30,
     fillColor: '#F9ED4F',
