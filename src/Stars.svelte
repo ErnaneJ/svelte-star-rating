@@ -1,11 +1,12 @@
 <script>
   import Star from './components/Star.svelte';
   export let config = {
-		readOnly: false,
+    readOnly: false,
     countStars: 5,
     range: {min: 0, max: 5, step: 0.001},
     score: 0.0,
     showScore: true,
+    name: "",
     starConfig: {
       size: 30,
       fillColor: '#F9ED4F',
@@ -29,7 +30,7 @@
         {/if}
       {/each}
     </div>
-    <input class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
+    <input name={config.name} class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
   </div>
   {#if config.showScore}
     <span class="show-score" style="font-size: {config.starConfig.size/2}px;">

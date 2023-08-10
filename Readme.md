@@ -45,6 +45,8 @@ This package will add a svelte component that may or may not receive a configura
 | score      |   `float`    |    false    |     0.0      |
 | showScore  |   `bool`     |    false    |     true     |
 | scoreFormat|   `function` |    false    |    precent   |
+| name       |   `String`   |    false    |     ""     | 
+
 
 In addition, we have two other nested attributes that specify distinct settings.
 
@@ -80,6 +82,7 @@ const config = {
   score: 0.0,
   showScore: true,
   scoreFormat: function(){ return `(${this.score.toFixed(0)}/${this.countStars})` },
+  name: "",
   starConfig: {
     size: 30,
     fillColor: '#F9ED4F',
