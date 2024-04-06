@@ -31,7 +31,15 @@
         {/if}
       {/each}
     </div>
-    <input name={config.name} class="slider" disabled={config.readOnly} type="range" min={config.range.min} max={config.range.max} step="{config.range.step}" bind:value={config.score} on:change >
+    <input  name={config.name} 
+            class="slider" 
+            type="range" 
+            min={config.readOnly ? config.score : config.range.min} 
+            max={config.readOnly ? config.score : config.range.max} 
+            step="{config.range.step}" bind:value={config.score} 
+            on:change 
+            on:click 
+    >
   </div>
   {#if config.showScore}
     <span class="show-score" style="font-size: {config.starConfig.size/2}px;">
