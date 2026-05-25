@@ -31,4 +31,6 @@ Thumbs.db
 
 .eslintcache
 *.swp
-*.swo
+*.swodist/
+.svelte-kit/
+build/

@@ -1,41 +1,75 @@
 {
   "name": "@ernane/svelte-star-rating",
-  "version": "1.1.9",
-  "description": "Simple component to assign scores based on stars.",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "svelte": "src/index.js",
+  "version": "2.0.0",
+  "description": "Simple and customizable Svelte star rating component with full TypeScript support.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "type": "module",
   "exports": {
     ".": {
-    "svelte": "dist/index.js"
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js",
+      "import": "./dist/index.js"
     }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "dev": "vite dev",
+    "build": "npm run package",
+    "build:demo": "vite build",
+    "package": "svelte-kit sync && svelte-package && publint",
+    "prepublishOnly": "npm run package",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "vitest run --config vitest.config.ts",
+    "test:watch": "vitest --config vitest.config.ts",
+    "test:coverage": "vitest run --config vitest.config.ts --coverage"
   },
-  "homepage": "https://github.com/ErnaneJ/svelte-star-rating",
-  "bugs": {
-    "url": "https://github.com/ErnaneJ/svelte-star-rating/issues"
+  "peerDependencies": {
+    "svelte": ">=4.0.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ErnaneJ/svelte-star-rating.git"
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "^2.21.4",
+    "@sveltejs/package": "^2.3.10",
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/svelte": "^5.2.7",
+    "@types/node": "^25.9.1",
+    "@vitest/coverage-v8": "^3.2.2",
+    "jsdom": "^26.1.0",
+    "publint": "^0.3.12",
+    "svelte": "^5.33.13",
+    "svelte-check": "^4.2.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
   },
   "keywords": [
     "svelte",
     "star",
-    "ratting",
+    "rating",
     "component",
-    "sapper"
+    "typescript",
+    "sveltekit"
   ],
-  "author": "ernane <ernane.junior25@gmail.com>",
+  "author": "Ernane Ferreira <ernane.junior25@gmail.com>",
   "license": "MIT",
-  "devDependencies": {
-    "rollup": "^2.39.0",
-    "rollup-plugin-css-only": "^4.5.2",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-svelte": "^7.1.0",
-    "svelte": "^3.32.3"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErnaneJ/svelte-star-rating.git"
+  },
+  "homepage": "https://ernanej.github.io/svelte-star-rating/",
+  "bugs": {
+    "url": "https://github.com/ErnaneJ/svelte-star-rating/issues"
+  },
+  "sideEffects": false
 }
