@@ -1,131 +1,214 @@
-<h1 align="center">
-   ✨ Svelte Star Rating ✨
-</h1>
+# ⭐ svelte-star-rating
 
-<div align="center">
-  <a href="#-Project">Project</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Installation">Installation</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Features">Features</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-Use">Use</a>&nbsp;&nbsp;&nbsp;
-</div>
+[![npm version](https://img.shields.io/npm/v/@ernane/svelte-star-rating?color=F9ED4F&logo=npm)](https://www.npmjs.com/package/@ernane/svelte-star-rating)
+[![CI](https://img.shields.io/github/actions/workflow/status/ErnaneJ/svelte-star-rating/ci.yml?branch=main&color=22c55e&logo=github&label=CI)](https://github.com/ErnaneJ/svelte-star-rating/actions)
+[![License: MIT](https://img.shields.io/npm/l/@ernane/svelte-star-rating?color=64748b)](./LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ready-3178c6?logo=typescript)](https://www.typescriptlang.org/)
 
-<p align="center">
-  <p align="center">
-  <img alt="preview star rating" src="https://raw.githubusercontent.com/ErnaneJ/svelte-star-rating/master/.github/preview.png" width="50%">
-</p>
+A lightweight, zero-dependency Svelte component for star ratings — with full **TypeScript** support, fractional stars, and flexible customization.
 
-## 💻 Project
-
-Simple Svelte component, with no dependencies, for implementing and capturing assessments through a simple and intuitive interface that will take you to the stars.
-
-[See this demo!! ](https://svelte.dev/repl/672b083a2ce346a6aae6f07d9e3787f4?version=3.47.0)
-
-## 📦 Installation
-
-  ```bash
-  $ npm install @ernane/svelte-star-rating # => or yarn
-  ```
-
-⚠️ if using [SvelteKit](https://kit.svelte.dev/) or [Sapper](https://sapper.svelte.dev/), it is advised to install as a development dependency:
-
-  ```bash
-  $ npm install @ernane/svelte-star-rating --save-dev # => or yarn
-  ```
-
-### 📁 Features
-
-This package will add a svelte component that may or may not receive a configuration object with the following attributes shown below.
-
-- ⚙️ General Settings
-
-| Attribute  |   Data Type  | Required    |    Default   |
-|:----------:|:------------:|:-----------:|:------------:|
-| readOnly   |   `bool`     |    false    |     false    |
-| countStars |   `integer`  |    false    |     5        |
-| score      |   `float`    |    false    |     0.0      |
-| showScore  |   `bool`     |    false    |     true     |
-| scoreFormat|   `function` |    false    |    precent   |
-| name       |   `String`   |    false    |     ""     | 
-
-
-In addition, we have two other nested attributes that specify distinct settings.
-
-- 📏 Range
-  
-| Attribute  |   Data Type  | Required  |    Default   |
-|:----------:|:------------:|:---------:|:------------:|
-|     min    |   `integer`  |    false    |      0       |
-|     max    |   `integer`  |    false    |      5       |
-|    step    |    `float`   |    false    |    0.001     |
-
-- ⭐ Setting of the Stars:
-
-|      Attribute      |   Data Type  |  Required   |    Default   |
-|:-------------------:|:------------:|:-----------:|:------------:|
-| size                |   `integer`  |    false    |      30      |
-| fillColor           |   `String`   |    false    |    #F9ED4F   |
-| strokeColor         |   `String`   |    false    |    #BB8511   | 
-| unfilledColor       |   `String`   |    false    |     #FFF     | 
-| strokeUnfilledColor |   `String`   |    false    |     #000     | 
-
-In the end, the configuration object will be similar to the one shown below.
-
-```js
-const config = {
-  readOnly: false,
-  countStars: 5,
-  range: {
-    min: 0, 
-    max: 5, 
-    step: 0.001
-  },
-  score: 0.0,
-  showScore: true,
-  scoreFormat: function(){ return `(${this.score.toFixed(0)}/${this.countStars})` },
-  name: "",
-  starConfig: {
-    size: 30,
-    fillColor: '#F9ED4F',
-    strokeColor: "#BB8511",
-    unfilledColor: '#FFF',
-    strokeUnfilledColor: '#000'
-  }
-}
-```
-
-- 🎯 Events
-
-In addition, it is also possible to observe events of the component itself that will be executed in an internal element from a defined action. Below are the available events.
-
-|         Type        |       Target      |  Required   |    Default   |
-|:-------------------:|:-----------------:|:-----------:|:------------:|
-|       change        |   `input.slider`  |    false    |      null    |
-
-## 💡 Use
-
-- Import the component
-
-  ```js
-  import StarRating from "@ernane/svelte-star-rating";
-  ```
-
-- Create the configuration object
-
-  ```js
-  const config = { ... }
-  ```
-  <small>**As shown in the previous section</small>
-
-- Finally, use it! 🎉
-
-  ```js
-  <StarRating {config}/>
-  ```
-
-_If you would like to implement or improve any feature feel free to submit a pull request. I would love to receive!_
+**[→ Live Demo](https://ernanej.github.io/svelte-star-rating/)**
 
 ---
 
-<div align="center">
-  Developed with ❤ by <a target="_blank" href="https://links.ernane.dev/">Ernane Ferreira</a>. 👋🏻
-</div>
+## Features
+
+- Full TypeScript support with exported types
+- Fractional star ratings (e.g. 3.7 ★)
+- Customizable colors, sizes, and score format
+- Read-only mode for displaying ratings
+- Zero runtime dependencies
+- Works with Svelte 4 and Svelte 5
+- Accessible (aria labels, aria-hidden on decorative SVGs)
+
+## Installation
+
+```bash
+npm install @ernane/svelte-star-rating
+```
+
+## Basic Usage
+
+```svelte
+<script lang="ts">
+  import { StarRating } from '@ernane/svelte-star-rating';
+  import type { RatingConfig } from '@ernane/svelte-star-rating';
+
+  let config: RatingConfig = {
+    countStars: 5,
+    score: 3,
+    showScore: true
+  };
+</script>
+
+<StarRating bind:config on:change={(e) => console.log('score:', e.target.value)} />
+```
+
+Or use the default export:
+
+```svelte
+<script lang="ts">
+  import StarRating from '@ernane/svelte-star-rating';
+</script>
+
+<StarRating />
+```
+
+## Configuration
+
+All fields are optional. Omitted fields use the defaults shown below.
+
+```typescript
+import type { RatingConfig } from '@ernane/svelte-star-rating';
+
+const config: RatingConfig = {
+  readOnly: false,              // disable interaction (display only)
+  countStars: 5,                // number of stars
+  score: 0,                     // current score (0 to countStars)
+  showScore: true,              // show score label
+  name: 'stars',                // HTML name attribute on the input
+  range: {
+    min: 0,
+    max: 5,
+    step: 0.001                 // precision of the slider
+  },
+  scoreFormat: (score, total) => `(${Math.round(score)}/${total})`,  // custom formatter
+  starConfig: {
+    size: 30,                   // px
+    fillColor: '#F9ED4F',       // filled star color
+    strokeColor: '#BB8511',     // filled star border
+    unfilledColor: '#FFF',      // empty star color
+    strokeUnfilledColor: '#000' // empty star border
+  }
+};
+```
+
+### `RatingConfig` type reference
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `readOnly` | `boolean` | `false` | Disables the slider |
+| `countStars` | `number` | `5` | Number of stars |
+| `score` | `number` | `0` | Current rating value |
+| `showScore` | `boolean` | `true` | Display the score label |
+| `name` | `string` | `'stars'` | `name` on the range input |
+| `range.min` | `number` | `0` | Slider minimum |
+| `range.max` | `number` | `5` | Slider maximum |
+| `range.step` | `number` | `0.001` | Slider step (precision) |
+| `scoreFormat` | `(score, total) => string` | — | Custom score formatter |
+| `starConfig.size` | `number` | `30` | Star size in px |
+| `starConfig.fillColor` | `string` | `'#F9ED4F'` | Color of filled stars |
+| `starConfig.strokeColor` | `string` | `'#BB8511'` | Border of filled stars |
+| `starConfig.unfilledColor` | `string` | `'#FFF'` | Color of empty stars |
+| `starConfig.strokeUnfilledColor` | `string` | `'#000'` | Border of empty stars |
+
+## Events
+
+The component forwards events from the underlying range `<input>`:
+
+```svelte
+<StarRating
+  bind:config
+  on:change={(e) => console.log('Changed:', e.currentTarget.value)}
+  on:click={() => console.log('Clicked')}
+/>
+```
+
+## Examples
+
+### Read-only (display mode)
+
+```svelte
+<StarRating config={{ readOnly: true, score: 4.3, countStars: 5 }} />
+```
+
+### Custom colors
+
+```svelte
+<StarRating config={{
+  score: 3,
+  starConfig: {
+    fillColor: '#ff6b6b',
+    strokeColor: '#c0392b',
+    unfilledColor: '#f0f0f0',
+    strokeUnfilledColor: '#ccc'
+  }
+}} />
+```
+
+### Custom score format
+
+```svelte
+<StarRating config={{
+  score: 4,
+  countStars: 5,
+  scoreFormat: (score, total) => `${score.toFixed(1)} / ${total} stars`
+}} />
+```
+
+### Multiple independent ratings
+
+```svelte
+<script lang="ts">
+  import { StarRating } from '@ernane/svelte-star-rating';
+  import type { RatingConfig } from '@ernane/svelte-star-rating';
+
+  let quality: RatingConfig = { name: 'quality', score: 4 };
+  let value: RatingConfig = { name: 'value', score: 3 };
+</script>
+
+<StarRating bind:config={quality} />
+<StarRating bind:config={value} />
+```
+
+## SvelteKit
+
+Works out of the box in SvelteKit. No additional configuration needed.
+
+```svelte
+<!-- src/routes/+page.svelte -->
+<script lang="ts">
+  import { StarRating } from '@ernane/svelte-star-rating';
+</script>
+
+<StarRating />
+```
+
+---
+
+## Migrating from v1
+
+### `scoreFormat` signature changed
+
+**v1** (no longer supported — uses `this` which is incompatible with TypeScript strict mode):
+```js
+scoreFormat: function() { return `(${this.score}/${this.countStars})`; }
+```
+
+**v2:**
+```ts
+scoreFormat: (score, total) => `(${score}/${total})`
+```
+
+### Partial config now supported
+
+In v2, you can pass a partial `RatingConfig` — omitted fields fall back to defaults. Previously, a full config object was required.
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/ErnaneJ/svelte-star-rating.git
+cd svelte-star-rating
+npm install
+
+npm run dev          # start demo at localhost:5173
+npm run check        # TypeScript type-check
+npm test             # run tests
+npm run package      # build the library into dist/
+```
+
+## License
+
+[MIT](./LICENSE) — Ernane Ferreira
