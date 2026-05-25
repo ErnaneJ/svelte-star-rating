@@ -102,7 +102,7 @@
 		<p class="event-hint">Move the slider to see change events</p>
 	{/if}
 
-	<div class="divider" />
+	<div class="divider"></div>
 
 	<!-- Controls grid -->
 	<div class="controls-grid">
