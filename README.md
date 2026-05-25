@@ -11,7 +11,8 @@
 [![License: MIT](https://img.shields.io/npm/l/@ernane/svelte-star-rating?color=64748b)](./LICENSE)
 [![npm downloads](https://img.shields.io/npm/dm/@ernane/svelte-star-rating?color=a78bfa&logo=npm&logoColor=white)](https://www.npmjs.com/package/@ernane/svelte-star-rating)
 
-[**→ Live Demo**](https://ernanej.github.io/svelte-star-rating/) &nbsp;·&nbsp;
+[**Live Demo**](https://ernanej.github.io/svelte-star-rating/) &nbsp;·&nbsp;
+[**Svelte Playground**](https://svelte.dev/playground/672b083a2ce346a6aae6f07d9e3787f4?version=5.55.9) &nbsp;·&nbsp;
 [**npm**](https://www.npmjs.com/package/@ernane/svelte-star-rating) &nbsp;·&nbsp;
 [**Changelog**](./CHANGELOG.md) &nbsp;·&nbsp;
 [**Contributing**](./CONTRIBUTING.md)
