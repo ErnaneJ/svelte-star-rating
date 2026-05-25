@@ -38,6 +38,7 @@
     "@sveltejs/kit": "^2.21.4",
     "@sveltejs/package": "^2.3.10",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tailwindcss/vite": "^4.3.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/svelte": "^5.2.7",
     "@types/node": "^25.9.1",
@@ -46,6 +47,7 @@
     "publint": "^0.3.12",
     "svelte": "^5.33.13",
     "svelte-check": "^4.2.1",
+    "tailwindcss": "^4.3.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vitest": "^3.2.2"

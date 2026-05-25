@@ -2,49 +2,90 @@
 	import StarRating from '$lib/Stars.svelte';
 	import type { RatingConfig } from '$lib/types.js';
 
-	let config: RatingConfig = {
-		readOnly: false,
-		countStars: 5,
-		range: { min: 0, max: 5, step: 0.001 },
-		score: 3.785,
-		showScore: true,
-		name: 'demo',
-		starConfig: {
-			size: 40,
-			fillColor: '#F9ED4F',
-			strokeColor: '#BB8511',
-			unfilledColor: '#1e2235',
-			strokeUnfilledColor: '#4a5270'
-		}
-	};
+	// ── state ────────────────────────────────────────────────────────────────────
+	let countStars = 5;
+	let score = 3.785;
+	let rangeMin = 0;
+	let rangeMax = 5;
+	let rangeStep = 0.001;
+	let showScore = false;
+	let readOnly = false;
+	let size = 52;
+	let fillColor = '#F9ED4F';
+	let strokeColor = '#BB8511';
+	let unfilledColor = '#1e2235';
+	let strokeUnfilledColor = '#3a3f5c';
 
-	let eventLog: { score: string; time: string }[] = [];
+	$: config = {
+		readOnly,
+		countStars,
+		range: { min: rangeMin, max: rangeMax, step: rangeStep },
+		score,
+		showScore,
+		name: 'demo',
+		starConfig: { size, fillColor, strokeColor, unfilledColor, strokeUnfilledColor }
+	} satisfies RatingConfig;
+
+	// ── events ────────────────────────────────────────────────────────────────────
+	let pulse = false;
+	let pulseId: ReturnType<typeof setTimeout>;
 
 	function handleChange(e: Event) {
-		const val = parseFloat((e.currentTarget as HTMLInputElement).value);
-		eventLog = [
-			{ score: val.toFixed(3), time: new Date().toLocaleTimeString() },
-			...eventLog.slice(0, 4)
-		];
+		score = parseFloat((e.currentTarget as HTMLInputElement).value);
+		clearTimeout(pulseId);
+		pulse = true;
+		pulseId = setTimeout(() => (pulse = false), 700);
 	}
 
-	$: codeSnippet = `<script lang="ts">
+	// ── derived ───────────────────────────────────────────────────────────────────
+	$: pct = rangeMax > rangeMin ? Math.round(((score - rangeMin) / (rangeMax - rangeMin)) * 100) : 0;
+	$: scoreFill = rangeMax > rangeMin ? ((score - rangeMin) / (rangeMax - rangeMin)) * 100 : 0;
+	$: starsFill = ((countStars - 1) / 19) * 100;
+	$: sizeFill = ((size - 16) / 104) * 100;
+
+	// ── presets ───────────────────────────────────────────────────────────────────
+	const presets = [
+		{ label: 'Gold',   fill: '#F9ED4F', stroke: '#BB8511', empty: '#1e2235', eStroke: '#3a3f5c' },
+		{ label: 'Ember',  fill: '#ff6b6b', stroke: '#c0392b', empty: '#1f0d0d', eStroke: '#3d1a1a' },
+		{ label: 'Ocean',  fill: '#38bdf8', stroke: '#0284c7', empty: '#0c1a26', eStroke: '#1a3a55' },
+		{ label: 'Mint',   fill: '#4ade80', stroke: '#16a34a', empty: '#0d1f13', eStroke: '#1a3d27' },
+		{ label: 'Candy',  fill: '#f472b6', stroke: '#be185d', empty: '#1f0d17', eStroke: '#3d1a30' },
+		{ label: 'Violet', fill: '#a78bfa', stroke: '#7c3aed', empty: '#130d1f', eStroke: '#281a3d' },
+	];
+
+	function applyPreset(p: typeof presets[0]) {
+		fillColor = p.fill;
+		strokeColor = p.stroke;
+		unfilledColor = p.empty;
+		strokeUnfilledColor = p.eStroke;
+	}
+
+	// ── reset ─────────────────────────────────────────────────────────────────────
+	function reset() {
+		countStars = 5; score = 3.785; rangeMin = 0; rangeMax = 5; rangeStep = 0.001;
+		showScore = false; readOnly = false; size = 52;
+		fillColor = '#F9ED4F'; strokeColor = '#BB8511';
+		unfilledColor = '#1e2235'; strokeUnfilledColor = '#3a3f5c';
+	}
+
+	// ── code ──────────────────────────────────────────────────────────────────────
+	$: code = `<script lang="ts">
   import { StarRating } from '@ernane/svelte-star-rating';
   import type { RatingConfig } from '@ernane/svelte-star-rating';
 
   let config: RatingConfig = {
-    readOnly: ${config.readOnly},
-    countStars: ${config.countStars},
-    range: { min: ${config.range?.min}, max: ${config.range?.max}, step: ${config.range?.step} },
-    score: ${config.score?.toFixed(3)},
-    showScore: ${config.showScore},
+    readOnly: ${readOnly},
+    countStars: ${countStars},
+    score: ${score.toFixed(3)},
+    showScore: ${showScore},
+    range: { min: ${rangeMin}, max: ${rangeMax}, step: ${rangeStep} },
     starConfig: {
-      size: ${config.starConfig?.size},
-      fillColor: '${config.starConfig?.fillColor}',
-      strokeColor: '${config.starConfig?.strokeColor}',
-      unfilledColor: '${config.starConfig?.unfilledColor}',
-      strokeUnfilledColor: '${config.starConfig?.strokeUnfilledColor}'
-    }
+      size: ${size},
+      fillColor: '${fillColor}',
+      strokeColor: '${strokeColor}',
+      unfilledColor: '${unfilledColor}',
+      strokeUnfilledColor: '${strokeUnfilledColor}',
+    },
   };
 <\/script>
 
@@ -52,496 +93,546 @@
 
 	let copied = false;
 	async function copyCode() {
-		await navigator.clipboard.writeText(codeSnippet);
+		await navigator.clipboard.writeText(code);
 		copied = true;
-		setTimeout(() => (copied = false), 2000);
+		setTimeout(() => (copied = false), 1600);
 	}
+
+	let codeOpen = false;
 </script>
 
 <svelte:head>
-	<title>Svelte Star Rating — Interactive Demo</title>
+	<title>svelte-star-rating — playground</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<!-- Hero -->
-<section class="hero">
-	<h1><span class="star-icon">⭐</span> svelte-star-rating</h1>
-	<p class="tagline">
-		A lightweight, zero-dependency Svelte component for star ratings — with full TypeScript support.
-	</p>
-	<div class="badges">
-		<a href="https://www.npmjs.com/package/@ernane/svelte-star-rating" target="_blank" rel="noopener">
-			<img src="https://img.shields.io/npm/v/@ernane/svelte-star-rating?color=F9ED4F&labelColor=1a1d2e&logo=npm&logoColor=white" alt="npm" />
-		</a>
-		<a href="https://github.com/ErnaneJ/svelte-star-rating/actions" target="_blank" rel="noopener">
-			<img src="https://img.shields.io/github/actions/workflow/status/ErnaneJ/svelte-star-rating/ci.yml?branch=main&color=22c55e&labelColor=1a1d2e&logo=github&logoColor=white&label=CI" alt="CI" />
-		</a>
-		<img src="https://img.shields.io/npm/l/@ernane/svelte-star-rating?color=576EE0&labelColor=1a1d2e" alt="MIT" />
-		<img src="https://img.shields.io/badge/TypeScript-ready-3178c6?labelColor=1a1d2e&logo=typescript&logoColor=white" alt="TypeScript" />
-	</div>
-</section>
+<div class="app">
 
-<!-- Main demo card -->
-<div class="card demo-card">
-
-	<!-- Star preview -->
-	<div class="preview-area">
-		<StarRating bind:config on:change={handleChange} />
-	</div>
-
-	<!-- Event log -->
-	{#if eventLog.length > 0}
-		<div class="event-log">
-			{#each eventLog as entry, i}
-				<span class="log-entry" style="opacity: {1 - i * 0.18}">
-					<span class="log-score">{entry.score}</span>
-					<span class="log-time">{entry.time}</span>
-				</span>
-			{/each}
+	<!-- ══ TOP BAR ════════════════════════════════════════════════════════════════ -->
+	<header class="topbar">
+		<div class="flex items-center gap-2 shrink-0">
+			<span class="text-base">⭐</span>
+			<span class="font-bold text-sm text-zinc-50 tracking-tight">svelte-star-rating</span>
+			<span class="text-[11px] bg-zinc-800 text-zinc-500 rounded px-1.5 py-px font-mono">v2.0.0</span>
 		</div>
-	{:else}
-		<p class="event-hint">Move the slider to see change events</p>
-	{/if}
 
-	<div class="divider"></div>
+		<code class="flex-1 text-center text-[12px] text-zinc-600 font-mono truncate hidden sm:block">
+			npm i @ernane/svelte-star-rating
+		</code>
 
-	<!-- Controls grid -->
-	<div class="controls-grid">
+		<nav class="flex gap-1 shrink-0">
+			<a
+				href="https://www.npmjs.com/package/@ernane/svelte-star-rating"
+				target="_blank" rel="noopener"
+				class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors"
+			>
+				<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M0 0v16h16V0H0zm13.5 13.5h-2.3v-9H8v9H2.5v-11h11v11z"/></svg>
+				npm
+			</a>
+			<a
+				href="https://github.com/ErnaneJ/svelte-star-rating"
+				target="_blank" rel="noopener"
+				class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 transition-colors"
+			>
+				<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .2A8 8 0 000 8.2c0 3.5 2.3 6.5 5.5 7.6.4.1.5-.2.5-.4v-1.4c-2.2.5-2.7-1.1-2.7-1.1-.4-.9-.9-1.2-.9-1.2-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.2 1.9.9 2.3.7.1-.5.3-.9.5-1.1-1.8-.2-3.6-.9-3.6-4 0-.9.3-1.6.8-2.1-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.2.8a7.6 7.6 0 014 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.1 0 3.1-1.9 3.8-3.7 4 .3.3.6.8.6 1.6v2.3c0 .2.1.5.5.4A8 8 0 0016 8.2 8 8 0 008 .2z"/></svg>
+				GitHub
+			</a>
+		</nav>
+	</header>
 
-		<!-- Column 1: Rating settings -->
-		<fieldset>
-			<legend>Rating</legend>
+	<!-- ══ MAIN WORKSPACE ════════════════════════════════════════════════════════ -->
+	<div class="workspace">
 
-			<div class="field">
-				<label for="count-stars">Stars</label>
-				<input id="count-stars" type="number" bind:value={config.countStars} min="1" max="20" step="1" />
+		<!-- ── PREVIEW ──────────────────────────────────────────────────────────── -->
+		<div class="preview" style="background: radial-gradient(ellipse 55% 45% at 50% 50%, {fillColor}22 0%, transparent 70%), #0c0c0e;">
+
+			<div
+				class="preview-stage"
+				style="box-shadow: 0 0 80px {fillColor}33, 0 0 0 1px #27272a inset;"
+			>
+				<StarRating bind:config on:change={handleChange} />
 			</div>
 
-			<div class="field">
-				<label for="score">Score</label>
-				<input id="score" type="number" bind:value={config.score} min={config.range?.min} max={config.range?.max} step={config.range?.step} />
+			<div class="flex items-baseline gap-2">
+				<span class="tabular-nums font-extrabold text-zinc-50 tracking-tight" style="font-size: 2.75rem; line-height: 1;">{score.toFixed(2)}</span>
+				<span class="text-lg font-semibold text-zinc-600">/ {rangeMax}</span>
+				<span class="text-xs text-zinc-700 font-mono ml-1">{pct}%</span>
 			</div>
 
-			<div class="field">
-				<label for="range-min">Range min</label>
-				<input id="range-min" type="number" bind:value={config.range!.min} min="0" step="1" />
-			</div>
+			<div class="flex items-center gap-4">
+				<span class="live-badge" class:live-active={pulse}>
+					<span class="live-dot"></span>
+					live
+				</span>
 
-			<div class="field">
-				<label for="range-max">Range max</label>
-				<input id="range-max" type="number" bind:value={config.range!.max} min="0" step="1" />
-			</div>
-
-			<div class="field">
-				<label for="range-step">Step</label>
-				<input id="range-step" type="number" bind:value={config.range!.step} min="0.001" step="0.001" />
-			</div>
-		</fieldset>
-
-		<!-- Column 2: Star appearance -->
-		<fieldset>
-			<legend>Appearance</legend>
-
-			<div class="field">
-				<label for="star-size">Size (px)</label>
-				<input id="star-size" type="number" bind:value={config.starConfig!.size} min="12" max="120" step="1" />
-			</div>
-
-			<div class="field color-field">
-				<label for="fill-color">Fill color</label>
-				<div class="color-input-wrap">
-					<input id="fill-color" type="color" bind:value={config.starConfig!.fillColor} />
-					<span class="color-hex">{config.starConfig?.fillColor}</span>
+				<div class="flex gap-2 items-center">
+					{#each presets as p}
+						<button
+							class="preset-dot"
+							style="background: {p.fill}; outline-color: {fillColor === p.fill ? p.fill : 'transparent'}; outline-offset: 2px; outline-width: 2px; outline-style: solid;"
+							title={p.label}
+							on:click={() => applyPreset(p)}
+							aria-label="Apply {p.label} preset"
+						></button>
+					{/each}
 				</div>
 			</div>
+		</div>
 
-			<div class="field color-field">
-				<label for="stroke-color">Stroke color</label>
-				<div class="color-input-wrap">
-					<input id="stroke-color" type="color" bind:value={config.starConfig!.strokeColor} />
-					<span class="color-hex">{config.starConfig?.strokeColor}</span>
+		<!-- ── CONTROL PANEL ─────────────────────────────────────────────────────── -->
+		<aside class="panel">
+
+			<!-- Rating -->
+			<section class="panel-section">
+				<h3 class="section-title">Rating</h3>
+
+				<div class="control-row">
+					<label for="ctrl-stars" class="ctrl-label">Stars</label>
+					<div class="slider-wrap">
+						<input id="ctrl-stars" type="range" min="1" max="20" step="1"
+							bind:value={countStars}
+							class="slider" style="--fill: {starsFill}%" />
+						<output class="ctrl-output">{countStars}</output>
+					</div>
 				</div>
+
+				<div class="control-row">
+					<label for="ctrl-score" class="ctrl-label">Score</label>
+					<div class="slider-wrap">
+						<input id="ctrl-score" type="range"
+							min={rangeMin} max={rangeMax} step={rangeStep}
+							bind:value={score}
+							class="slider" style="--fill: {scoreFill}%" />
+						<output class="ctrl-output">{score.toFixed(2)}</output>
+					</div>
+				</div>
+
+				<div class="control-row items-start">
+					<span class="ctrl-label mt-1">Range</span>
+					<div class="grid grid-cols-3 gap-1.5 flex-1">
+						{#each [['min', rangeMin], ['max', rangeMax], ['step', rangeStep]] as [lbl, _], i}
+							<label class="flex flex-col gap-1">
+								<span class="text-[10px] text-zinc-600 uppercase tracking-wider">{lbl}</span>
+								{#if i === 0}
+									<input type="number" bind:value={rangeMin} min="0" step="1" class="num-input" />
+								{:else if i === 1}
+									<input type="number" bind:value={rangeMax} min="1" step="1" class="num-input" />
+								{:else}
+									<input type="number" bind:value={rangeStep} min="0.001" step="0.001" class="num-input" />
+								{/if}
+							</label>
+						{/each}
+					</div>
+				</div>
+			</section>
+
+			<!-- Appearance -->
+			<section class="panel-section">
+				<h3 class="section-title">Appearance</h3>
+
+				<div class="control-row">
+					<label for="ctrl-size" class="ctrl-label">Size</label>
+					<div class="slider-wrap">
+						<input id="ctrl-size" type="range" min="16" max="120" step="1"
+							bind:value={size}
+							class="slider" style="--fill: {sizeFill}%" />
+						<output class="ctrl-output">{size}px</output>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 gap-2 mt-1">
+					{#each [
+						{ key: 'fillColor', label: 'Fill', color: fillColor },
+						{ key: 'strokeColor', label: 'Stroke', color: strokeColor },
+						{ key: 'unfilledColor', label: 'Empty fill', color: unfilledColor },
+						{ key: 'strokeUnfilledColor', label: 'Empty stroke', color: strokeUnfilledColor },
+					] as item}
+						<label class="color-control">
+							<span class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 block">{item.label}</span>
+							<div class="color-row">
+								{#if item.key === 'fillColor'}
+									<input type="color" bind:value={fillColor} class="color-picker" />
+								{:else if item.key === 'strokeColor'}
+									<input type="color" bind:value={strokeColor} class="color-picker" />
+								{:else if item.key === 'unfilledColor'}
+									<input type="color" bind:value={unfilledColor} class="color-picker" />
+								{:else}
+									<input type="color" bind:value={strokeUnfilledColor} class="color-picker" />
+								{/if}
+								<span class="color-swatch" style="background: {item.color}; border-color: {item.color}22;"></span>
+								<span class="text-[11px] font-mono text-zinc-500 uppercase truncate">{item.color}</span>
+							</div>
+						</label>
+					{/each}
+				</div>
+			</section>
+
+			<!-- Options -->
+			<section class="panel-section">
+				<h3 class="section-title">Options</h3>
+
+				<div class="space-y-px">
+					<div class="toggle-row">
+						<span class="text-sm text-zinc-400">Read only</span>
+						<button
+							role="switch"
+							aria-checked={readOnly}
+							aria-label="Toggle read only"
+							class="toggle {readOnly ? 'toggle-on' : ''}"
+							on:click={() => (readOnly = !readOnly)}
+						><span class="toggle-thumb"></span></button>
+					</div>
+
+					<div class="toggle-row">
+						<span class="text-sm text-zinc-400">Show score</span>
+						<button
+							role="switch"
+							aria-checked={showScore}
+							aria-label="Toggle show score"
+							class="toggle {showScore ? 'toggle-on' : ''}"
+							on:click={() => (showScore = !showScore)}
+						><span class="toggle-thumb"></span></button>
+					</div>
+				</div>
+			</section>
+
+			<!-- Actions -->
+			<div class="flex gap-2 p-4 mt-auto border-t border-zinc-900">
+				<button
+					on:click={reset}
+					class="flex-1 py-2 rounded-lg border border-zinc-800 text-zinc-500 text-xs font-medium hover:border-zinc-700 hover:text-zinc-300 transition-colors cursor-pointer"
+				>Reset</button>
+				<button
+					on:click={copyCode}
+					class="flex-[2] flex items-center justify-center gap-1.5 py-2 rounded-lg border border-indigo-700 bg-indigo-900/60 text-indigo-300 text-xs font-medium hover:bg-indigo-800/60 hover:border-indigo-500 transition-colors cursor-pointer"
+				>
+					{#if copied}
+						<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M13.7 4.3l-8 8-3.4-3.4 1.4-1.4 2 2 6.6-6.6z"/></svg>
+						Copied!
+					{:else}
+						<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2a2 2 0 00-2 2v9h1V4a1 1 0 011-1h7V2H4zm2 3a2 2 0 012-2h5a2 2 0 012 2v8a2 2 0 01-2 2H8a2 2 0 01-2-2V5z"/></svg>
+						Copy code
+					{/if}
+				</button>
 			</div>
 
-			<div class="field color-field">
-				<label for="unfilled-color">Unfilled color</label>
-				<div class="color-input-wrap">
-					<input id="unfilled-color" type="color" bind:value={config.starConfig!.unfilledColor} />
-					<span class="color-hex">{config.starConfig?.unfilledColor}</span>
-				</div>
-			</div>
-
-			<div class="field color-field">
-				<label for="stroke-unfilled-color">Unfilled stroke</label>
-				<div class="color-input-wrap">
-					<input id="stroke-unfilled-color" type="color" bind:value={config.starConfig!.strokeUnfilledColor} />
-					<span class="color-hex">{config.starConfig?.strokeUnfilledColor}</span>
-				</div>
-			</div>
-		</fieldset>
-
+		</aside>
 	</div>
 
-	<!-- Options row -->
-	<div class="options-row">
+	<!-- ══ CODE DRAWER ═══════════════════════════════════════════════════════════ -->
+	<div class="border-t border-zinc-900 bg-zinc-950 shrink-0" class:code-open={codeOpen}>
 		<button
-			class="toggle-btn {config.readOnly ? 'active' : ''}"
-			on:click={() => (config = { ...config, readOnly: !config.readOnly })}
+			on:click={() => (codeOpen = !codeOpen)}
+			class="flex items-center gap-2 w-full px-5 py-2 text-zinc-600 text-xs hover:text-zinc-400 transition-colors cursor-pointer"
 		>
-			{config.readOnly ? '🔒 Read-only ON' : '🔓 Read-only OFF'}
+			<svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"
+				style="transform: rotate({codeOpen ? 180 : 0}deg); transition: transform .2s">
+				<path d="M8 10.7L2 4.7l1.4-1.4L8 7.9l4.6-4.6L14 4.7z"/>
+			</svg>
+			{codeOpen ? 'Hide' : 'Show'} code
 		</button>
 
-		<button
-			class="toggle-btn {config.showScore ? 'active' : ''}"
-			on:click={() => (config = { ...config, showScore: !config.showScore })}
-		>
-			{config.showScore ? '👁 Score visible' : '🙈 Score hidden'}
-		</button>
+		{#if codeOpen}
+			<pre class="px-5 pb-4 font-mono text-[11px] leading-relaxed text-zinc-500 overflow-x-auto max-h-56 overflow-y-auto"><code>{code}</code></pre>
+		{/if}
 	</div>
 
-</div>
+	<!-- ══ FOOTER ════════════════════════════════════════════════════════════════ -->
+	<footer class="px-5 py-2.5 text-center text-[11px] text-zinc-700 border-t border-zinc-900 shrink-0">
+		Developed with ❤️ by
+		<a href="https://www.ernane.dev" target="_blank" rel="noopener" class="text-zinc-600 hover:text-indigo-400 transition-colors">Ernane Ferreira</a>
+	</footer>
 
-<!-- Code snippet -->
-<div class="card code-card">
-	<div class="code-header">
-		<span class="code-title">Generated code</span>
-		<button class="copy-btn" on:click={copyCode}>
-			{copied ? '✓ Copied!' : 'Copy'}
-		</button>
-	</div>
-	<pre class="code-block"><code>{codeSnippet}</code></pre>
 </div>
-
-<!-- Install card -->
-<div class="card install-card">
-	<span class="install-label">Install</span>
-	<code class="install-cmd">npm install @ernane/svelte-star-rating</code>
-</div>
-
-<footer>
-	<p>
-		Developed with ❤️ by <a href="https://www.ernane.dev" target="_blank" rel="noopener">Ernane Ferreira</a>
-		·
-		<a href="https://github.com/ErnaneJ/svelte-star-rating" target="_blank" rel="noopener">GitHub</a>
-		·
-		<a href="https://www.npmjs.com/package/@ernane/svelte-star-rating" target="_blank" rel="noopener">npm</a>
-	</p>
-</footer>
 
 <style>
-	/* Hero */
-	.hero {
-		text-align: center;
-		margin-bottom: 2.5rem;
-	}
-	h1 {
-		font-size: 2.25rem;
-		font-weight: 800;
-		color: #f1f5f9;
-		margin-bottom: 0.6rem;
-		letter-spacing: -0.5px;
-	}
-	.star-icon {
-		margin-right: 0.25rem;
-	}
-	.tagline {
-		color: #8892b0;
-		font-size: 1rem;
-		max-width: 480px;
-		margin: 0 auto 1.25rem;
-		line-height: 1.65;
-	}
-	.badges {
-		display: flex;
-		gap: 0.5rem;
-		justify-content: center;
-		flex-wrap: wrap;
-	}
-	.badges img {
-		height: 20px;
-		border-radius: 3px;
-	}
-
-	/* Cards */
-	.card {
-		background: #1a1d2e;
-		border: 1px solid #2a2d45;
-		border-radius: 16px;
-		padding: 2rem;
-		margin-bottom: 1.25rem;
-	}
-
-	/* Demo card */
-	.demo-card {
+	/* ── app shell ──────────────────────────────────────────────────────────── */
+	:global(*, *::before, *::after) { box-sizing: border-box; margin: 0; padding: 0; }
+	:global(body) {
+		font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		background: #09090b;
+		color: #e4e4e7;
+		height: 100dvh;
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
-		gap: 1.25rem;
 	}
 
-	.preview-area {
-		background: #0f1120;
-		border-radius: 12px;
-		padding: 2.5rem 1.5rem;
+	.app {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: 1px solid #2a2d45;
-		min-height: 96px;
-	}
-
-	/* Event log */
-	.event-log {
-		display: flex;
-		gap: 0.75rem;
-		align-items: center;
-		flex-wrap: wrap;
-		min-height: 28px;
-	}
-	.log-entry {
-		display: flex;
-		align-items: center;
-		gap: 0.4rem;
-		font-family: monospace;
-		font-size: 0.8rem;
-		background: #0f1120;
-		border: 1px solid #2a2d45;
-		border-radius: 6px;
-		padding: 0.25rem 0.6rem;
-	}
-	.log-score {
-		color: #f9ed4f;
-		font-weight: 600;
-	}
-	.log-time {
-		color: #4a5270;
-	}
-	.event-hint {
-		font-size: 0.8rem;
-		color: #3a3f5c;
-		font-style: italic;
-		text-align: center;
-	}
-
-	.divider {
-		height: 1px;
-		background: #2a2d45;
-		margin: 0 -0.5rem;
-	}
-
-	/* Controls */
-	.controls-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 1.25rem;
-	}
-
-	fieldset {
-		border: 1px solid #2a2d45;
-		border-radius: 10px;
-		padding: 1rem 1.25rem;
-	}
-
-	legend {
-		font-size: 0.7rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: #576ee0;
-		padding: 0 0.4rem;
-	}
-
-	.field {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.45rem 0;
-		border-bottom: 1px solid #1e2235;
-		gap: 0.5rem;
-	}
-	.field:last-child {
-		border-bottom: none;
-		padding-bottom: 0;
-	}
-
-	label {
-		font-size: 0.8rem;
-		color: #8892b0;
-		white-space: nowrap;
-		flex-shrink: 0;
-	}
-
-	input[type='number'] {
-		background: #0f1120;
-		border: 1px solid #2a2d45;
-		border-radius: 6px;
-		padding: 0.3rem 0.5rem;
-		color: #e2e8f0;
-		font-size: 0.82rem;
-		width: 80px;
-		text-align: right;
-		font-family: monospace;
-		outline: none;
-		transition: border-color 0.15s;
-	}
-	input[type='number']:focus {
-		border-color: #576ee0;
-	}
-
-	/* Color inputs */
-	.color-field .color-input-wrap {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	input[type='color'] {
-		appearance: none;
-		-webkit-appearance: none;
-		width: 32px;
-		height: 28px;
-		border: 1px solid #2a2d45;
-		border-radius: 6px;
-		padding: 2px;
-		background: #0f1120;
-		cursor: pointer;
-		flex-shrink: 0;
-	}
-	input[type='color']::-webkit-color-swatch-wrapper {
-		padding: 0;
-	}
-	input[type='color']::-webkit-color-swatch {
-		border: none;
-		border-radius: 4px;
-	}
-	.color-hex {
-		font-family: monospace;
-		font-size: 0.75rem;
-		color: #4a5270;
-		min-width: 52px;
-	}
-
-	/* Options row */
-	.options-row {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-	}
-
-	.toggle-btn {
-		flex: 1;
-		min-width: 140px;
-		padding: 0.55rem 1rem;
-		border-radius: 8px;
-		border: 1px solid #2a2d45;
-		background: #0f1120;
-		color: #8892b0;
-		font-size: 0.82rem;
-		cursor: pointer;
-		transition: all 0.15s;
-		font-family: inherit;
-	}
-	.toggle-btn:hover {
-		border-color: #576ee0;
-		color: #e2e8f0;
-	}
-	.toggle-btn.active {
-		background: #576ee015;
-		border-color: #576ee0;
-		color: #576ee0;
-	}
-
-	/* Code card */
-	.code-card {
-		padding: 0;
+		flex-direction: column;
+		height: 100dvh;
 		overflow: hidden;
 	}
-	.code-header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.75rem 1.25rem;
-		border-bottom: 1px solid #2a2d45;
-	}
-	.code-title {
-		font-size: 0.78rem;
-		font-weight: 600;
-		color: #4a5270;
-		text-transform: uppercase;
-		letter-spacing: 0.08em;
-	}
-	.copy-btn {
-		background: none;
-		border: 1px solid #2a2d45;
-		border-radius: 6px;
-		padding: 0.25rem 0.7rem;
-		color: #8892b0;
-		font-size: 0.78rem;
-		cursor: pointer;
-		font-family: inherit;
-		transition: all 0.15s;
-	}
-	.copy-btn:hover {
-		border-color: #576ee0;
-		color: #576ee0;
-	}
-	.code-block {
-		margin: 0;
-		padding: 1.25rem 1.5rem;
-		overflow-x: auto;
-		font-family: 'Fira Code', 'Cascadia Code', monospace;
-		font-size: 0.78rem;
-		line-height: 1.65;
-		color: #8892b0;
-	}
-	.code-block code {
-		white-space: pre;
-	}
 
-	/* Install card */
-	.install-card {
+	/* ── topbar ─────────────────────────────────────────────────────────────── */
+	.topbar {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		padding: 1rem 1.5rem;
+		padding: 0 1.25rem;
+		height: 48px;
+		border-bottom: 1px solid #18181b;
+		flex-shrink: 0;
+		background: #09090b;
 	}
-	.install-label {
-		font-size: 0.75rem;
+
+	/* ── workspace split ────────────────────────────────────────────────────── */
+	.workspace {
+		display: grid;
+		grid-template-columns: 1fr 300px;
+		flex: 1;
+		min-height: 0;
+	}
+
+	/* ── preview ────────────────────────────────────────────────────────────── */
+	.preview {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.75rem;
+		padding: 2.5rem;
+		border-right: 1px solid #18181b;
+		overflow: hidden;
+		transition: background 0.5s ease;
+	}
+
+	.preview-stage {
+		padding: 3.5rem 5rem;
+		border-radius: 24px;
+		background: #111113;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 260px;
+		transition: box-shadow 0.5s ease;
+	}
+
+	/* ── live indicator ─────────────────────────────────────────────────────── */
+	.live-badge {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.65rem;
 		font-weight: 700;
 		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: #4a5270;
-		white-space: nowrap;
+		letter-spacing: 0.12em;
+		color: #3f3f46;
 	}
-	.install-cmd {
-		font-family: monospace;
-		font-size: 0.9rem;
-		color: #f9ed4f;
+	.live-dot {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: #27272a;
+		transition: background 0.3s, box-shadow 0.3s;
 	}
-
-	/* Footer */
-	footer {
-		text-align: center;
-		padding: 1.5rem 0 2rem;
-		color: #3a3f5c;
-		font-size: 0.85rem;
-	}
-	footer a {
-		color: #576ee0;
-		text-decoration: none;
-	}
-	footer a:hover {
-		text-decoration: underline;
+	.live-active .live-dot {
+		background: #4ade80;
+		box-shadow: 0 0 10px #4ade8088;
 	}
 
-	/* Responsive */
-	@media (max-width: 600px) {
-		.controls-grid {
-			grid-template-columns: 1fr;
-		}
-		h1 {
-			font-size: 1.75rem;
-		}
-		.install-card {
-			flex-direction: column;
-			align-items: flex-start;
-		}
+	/* ── presets ────────────────────────────────────────────────────────────── */
+	.preset-dot {
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		border: none;
+		cursor: pointer;
+		transition: transform 0.15s, outline-color 0.15s;
+		flex-shrink: 0;
+	}
+	.preset-dot:hover { transform: scale(1.25); }
+
+	/* ── panel ──────────────────────────────────────────────────────────────── */
+	.panel {
+		display: flex;
+		flex-direction: column;
+		overflow-y: auto;
+		background: #0c0c0e;
+		scrollbar-width: thin;
+		scrollbar-color: #27272a transparent;
+	}
+
+	.panel-section {
+		padding: 0.875rem 1rem;
+		border-bottom: 1px solid #18181b;
+	}
+
+	.section-title {
+		font-size: 0.6rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: #52525b;
+		margin-bottom: 0.75rem;
+	}
+
+	/* ── control rows ───────────────────────────────────────────────────────── */
+	.control-row {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.55rem;
+	}
+	.control-row:last-child { margin-bottom: 0; }
+
+	.ctrl-label {
+		font-size: 0.72rem;
+		color: #71717a;
+		width: 38px;
+		flex-shrink: 0;
+	}
+
+	/* ── slider ─────────────────────────────────────────────────────────────── */
+	.slider-wrap {
+		flex: 1;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+	}
+
+	.slider {
+		flex: 1;
+		-webkit-appearance: none;
+		appearance: none;
+		height: 3px;
+		border-radius: 3px;
+		background: linear-gradient(to right, #818cf8 var(--fill, 0%), #27272a var(--fill, 0%));
+		outline: none;
+		cursor: pointer;
+	}
+	.slider::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		width: 13px;
+		height: 13px;
+		border-radius: 50%;
+		background: #fafafa;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+		cursor: pointer;
+		transition: transform 0.12s, box-shadow 0.12s;
+	}
+	.slider::-webkit-slider-thumb:hover {
+		transform: scale(1.3);
+		box-shadow: 0 0 0 5px rgba(129, 140, 248, 0.18), 0 1px 4px rgba(0, 0, 0, 0.6);
+	}
+	.slider::-moz-range-thumb {
+		width: 13px;
+		height: 13px;
+		border-radius: 50%;
+		border: none;
+		background: #fafafa;
+		cursor: pointer;
+	}
+
+	.ctrl-output {
+		font-size: 0.68rem;
+		font-family: 'Fira Code', monospace;
+		color: #a1a1aa;
+		min-width: 38px;
+		text-align: right;
+		flex-shrink: 0;
+	}
+
+	/* ── number inputs ──────────────────────────────────────────────────────── */
+	.num-input {
+		background: #18181b;
+		border: 1px solid #27272a;
+		border-radius: 6px;
+		padding: 0.3rem 0.4rem;
+		color: #e4e4e7;
+		font-size: 0.7rem;
+		width: 100%;
+		outline: none;
+		font-family: 'Fira Code', monospace;
+		transition: border-color 0.15s;
+	}
+	.num-input:focus { border-color: #818cf8; }
+
+	/* ── color controls ─────────────────────────────────────────────────────── */
+	.color-control {
+		cursor: pointer;
+	}
+
+	.color-row {
+		position: relative;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		background: #18181b;
+		border: 1px solid #27272a;
+		border-radius: 7px;
+		padding: 0.3rem 0.5rem;
+		transition: border-color 0.15s;
+		overflow: hidden;
+	}
+	.color-row:hover { border-color: #3f3f46; }
+
+	.color-picker {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	.color-swatch {
+		width: 13px;
+		height: 13px;
+		border-radius: 3px;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		flex-shrink: 0;
+	}
+
+	/* ── toggles ────────────────────────────────────────────────────────────── */
+	.toggle-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid #18181b;
+	}
+	.toggle-row:last-child { border-bottom: none; }
+
+	.toggle {
+		position: relative;
+		width: 36px;
+		height: 20px;
+		border-radius: 10px;
+		border: 1px solid #27272a;
+		background: #18181b;
+		cursor: pointer;
+		transition: background 0.2s, border-color 0.2s;
+		padding: 0;
+		flex-shrink: 0;
+	}
+	.toggle-on {
+		background: #3730a3;
+		border-color: #818cf8;
+	}
+	.toggle-thumb {
+		position: absolute;
+		top: 2px;
+		left: 2px;
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		background: #52525b;
+		transition: transform 0.2s, background 0.2s;
+	}
+	.toggle-on .toggle-thumb {
+		transform: translateX(16px);
+		background: #c7d2fe;
+	}
+
+	/* ── responsive ─────────────────────────────────────────────────────────── */
+	@media (max-width: 640px) {
+		:global(body) { overflow: auto; height: auto; }
+		.app { height: auto; }
+		.workspace { grid-template-columns: 1fr; }
+		.preview { border-right: none; border-bottom: 1px solid #18181b; min-height: 300px; }
+		.panel { max-height: none; }
 	}
 </style>
