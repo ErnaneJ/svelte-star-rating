@@ -3,7 +3,6 @@
 	import type { RatingConfig } from '$lib/types.js';
 
 	// ── state ────────────────────────────────────────────────────────────────────
-	let countStars = 5;
 	let score = 3.785;
 	let rangeMin = 0;
 	let rangeMax = 5;
@@ -15,6 +14,13 @@
 	let strokeColor = '#BB8511';
 	let unfilledColor = '#1e2235';
 	let strokeUnfilledColor = '#3a3f5c';
+
+	// countStars always matches the range span (1–20), so changing rangeMax adds stars
+	$: countStars = Math.min(Math.max(Math.round(rangeMax - rangeMin), 1), 20);
+
+	// clamp score whenever range changes
+	$: if (score > rangeMax) score = rangeMax;
+	$: if (score < rangeMin) score = rangeMin;
 
 	$: config = {
 		readOnly,
@@ -30,6 +36,12 @@
 	let pulse = false;
 	let pulseId: ReturnType<typeof setTimeout>;
 
+	// fires on every drag tick → real-time score display
+	function handleInput(e: Event) {
+		score = parseFloat((e.currentTarget as HTMLInputElement).value);
+	}
+
+	// fires on mouse-release → pulse animation
 	function handleChange(e: Event) {
 		score = parseFloat((e.currentTarget as HTMLInputElement).value);
 		clearTimeout(pulseId);
@@ -38,9 +50,9 @@
 	}
 
 	// ── derived ───────────────────────────────────────────────────────────────────
-	$: pct = rangeMax > rangeMin ? Math.round(((score - rangeMin) / (rangeMax - rangeMin)) * 100) : 0;
-	$: scoreFill = rangeMax > rangeMin ? ((score - rangeMin) / (rangeMax - rangeMin)) * 100 : 0;
-	$: starsFill = ((countStars - 1) / 19) * 100;
+	$: span = rangeMax - rangeMin;
+	$: pct = span > 0 ? Math.round(((score - rangeMin) / span) * 100) : 0;
+	$: scoreFill = span > 0 ? ((score - rangeMin) / span) * 100 : 0;
 	$: sizeFill = ((size - 16) / 104) * 100;
 
 	// ── presets ───────────────────────────────────────────────────────────────────
@@ -62,7 +74,7 @@
 
 	// ── reset ─────────────────────────────────────────────────────────────────────
 	function reset() {
-		countStars = 5; score = 3.785; rangeMin = 0; rangeMax = 5; rangeStep = 0.001;
+		score = 3.785; rangeMin = 0; rangeMax = 5; rangeStep = 0.001;
 		showScore = false; readOnly = false; size = 52;
 		fillColor = '#F9ED4F'; strokeColor = '#BB8511';
 		unfilledColor = '#1e2235'; strokeUnfilledColor = '#3a3f5c';
@@ -98,11 +110,30 @@
 		setTimeout(() => (copied = false), 1600);
 	}
 
-	let codeOpen = false;
+	let codeOpen = true;
 </script>
 
 <svelte:head>
-	<title>svelte-star-rating — playground</title>
+	<title>svelte-star-rating — Interactive Playground</title>
+	<meta name="description" content="Interactive playground for @ernane/svelte-star-rating — a fully customizable Svelte star rating component with TypeScript support. Adjust colors, size, range, and more in real time." />
+	<meta name="keywords" content="svelte, star rating, component, typescript, sveltekit, npm, open source, interactive, playground" />
+	<meta name="author" content="Ernane Ferreira" />
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://ernanej.github.io/svelte-star-rating/" />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://ernanej.github.io/svelte-star-rating/" />
+	<meta property="og:title" content="svelte-star-rating — Interactive Playground" />
+	<meta property="og:description" content="Fully customizable Svelte star rating component with TypeScript support. Try it live: change colors, size, range, readOnly mode, and more." />
+	<meta property="og:site_name" content="svelte-star-rating" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content="svelte-star-rating — Interactive Playground" />
+	<meta name="twitter:description" content="Fully customizable Svelte star rating component with TypeScript support. Try it live." />
+	<meta name="twitter:creator" content="@ErnaneJ" />
+
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
 </svelte:head>
@@ -151,7 +182,7 @@
 				class="preview-stage"
 				style="box-shadow: 0 0 80px {fillColor}33, 0 0 0 1px #27272a inset;"
 			>
-				<StarRating bind:config on:change={handleChange} />
+				<StarRating bind:config on:input={handleInput} on:change={handleChange} />
 			</div>
 
 			<div class="flex items-baseline gap-2">
@@ -188,16 +219,6 @@
 				<h3 class="section-title">Rating</h3>
 
 				<div class="control-row">
-					<label for="ctrl-stars" class="ctrl-label">Stars</label>
-					<div class="slider-wrap">
-						<input id="ctrl-stars" type="range" min="1" max="20" step="1"
-							bind:value={countStars}
-							class="slider" style="--fill: {starsFill}%" />
-						<output class="ctrl-output">{countStars}</output>
-					</div>
-				</div>
-
-				<div class="control-row">
 					<label for="ctrl-score" class="ctrl-label">Score</label>
 					<div class="slider-wrap">
 						<input id="ctrl-score" type="range"
@@ -211,20 +232,25 @@
 				<div class="control-row items-start">
 					<span class="ctrl-label mt-1">Range</span>
 					<div class="grid grid-cols-3 gap-1.5 flex-1">
-						{#each [['min', rangeMin], ['max', rangeMax], ['step', rangeStep]] as [lbl, _], i}
-							<label class="flex flex-col gap-1">
-								<span class="text-[10px] text-zinc-600 uppercase tracking-wider">{lbl}</span>
-								{#if i === 0}
-									<input type="number" bind:value={rangeMin} min="0" step="1" class="num-input" />
-								{:else if i === 1}
-									<input type="number" bind:value={rangeMax} min="1" step="1" class="num-input" />
-								{:else}
-									<input type="number" bind:value={rangeStep} min="0.001" step="0.001" class="num-input" />
-								{/if}
-							</label>
-						{/each}
+						<label class="flex flex-col gap-1">
+							<span class="text-[10px] text-zinc-600 uppercase tracking-wider">min</span>
+							<input type="number" bind:value={rangeMin} min="0" step="1" class="num-input" />
+						</label>
+						<label class="flex flex-col gap-1">
+							<span class="text-[10px] text-zinc-600 uppercase tracking-wider">max</span>
+							<input type="number" bind:value={rangeMax} min="1" max="20" step="1" class="num-input" />
+						</label>
+						<label class="flex flex-col gap-1">
+							<span class="text-[10px] text-zinc-600 uppercase tracking-wider">step</span>
+							<input type="number" bind:value={rangeStep} min="0.001" step="0.001" class="num-input" />
+						</label>
 					</div>
 				</div>
+
+				<p class="text-[10px] text-zinc-700 mt-2 leading-relaxed">
+					Stars: <span class="text-zinc-500 font-mono">{countStars}</span>
+					— derived from range max − min
+				</p>
 			</section>
 
 			<!-- Appearance -->
@@ -321,7 +347,7 @@
 	</div>
 
 	<!-- ══ CODE DRAWER ═══════════════════════════════════════════════════════════ -->
-	<div class="border-t border-zinc-900 bg-zinc-950 shrink-0" class:code-open={codeOpen}>
+	<div class="code-drawer" class:code-open={codeOpen}>
 		<button
 			on:click={() => (codeOpen = !codeOpen)}
 			class="flex items-center gap-2 w-full px-5 py-2 text-zinc-600 text-xs hover:text-zinc-400 transition-colors cursor-pointer"
@@ -334,7 +360,7 @@
 		</button>
 
 		{#if codeOpen}
-			<pre class="px-5 pb-4 font-mono text-[11px] leading-relaxed text-zinc-500 overflow-x-auto max-h-56 overflow-y-auto"><code>{code}</code></pre>
+			<pre class="code-block"><code>{code}</code></pre>
 		{/if}
 	</div>
 
@@ -358,6 +384,16 @@
 		display: flex;
 		flex-direction: column;
 	}
+
+	/* ── custom scrollbars (global) ─────────────────────────────────────────── */
+	:global(::-webkit-scrollbar) { width: 5px; height: 5px; }
+	:global(::-webkit-scrollbar-track) { background: transparent; }
+	:global(::-webkit-scrollbar-thumb) {
+		background: #27272a;
+		border-radius: 99px;
+	}
+	:global(::-webkit-scrollbar-thumb:hover) { background: #3f3f46; }
+	:global(*) { scrollbar-width: thin; scrollbar-color: #27272a transparent; }
 
 	.app {
 		display: flex;
@@ -451,8 +487,6 @@
 		flex-direction: column;
 		overflow-y: auto;
 		background: #0c0c0e;
-		scrollbar-width: thin;
-		scrollbar-color: #27272a transparent;
 	}
 
 	.panel-section {
@@ -551,9 +585,7 @@
 	.num-input:focus { border-color: #818cf8; }
 
 	/* ── color controls ─────────────────────────────────────────────────────── */
-	.color-control {
-		cursor: pointer;
-	}
+	.color-control { cursor: pointer; }
 
 	.color-row {
 		position: relative;
@@ -626,6 +658,26 @@
 		transform: translateX(16px);
 		background: #c7d2fe;
 	}
+
+	/* ── code drawer ─────────────────────────────────────────────────────────── */
+	.code-drawer {
+		border-top: 1px solid #27272a;
+		background: #09090b;
+		flex-shrink: 0;
+	}
+	.code-open {
+		max-height: 240px;
+		overflow-y: auto;
+	}
+	.code-block {
+		padding: 0 1.25rem 1rem;
+		font-family: 'Fira Code', 'Cascadia Code', monospace;
+		font-size: 0.72rem;
+		line-height: 1.75;
+		color: #71717a;
+		overflow-x: auto;
+	}
+	.code-block code { white-space: pre; }
 
 	/* ── responsive ─────────────────────────────────────────────────────────── */
 	@media (max-width: 640px) {

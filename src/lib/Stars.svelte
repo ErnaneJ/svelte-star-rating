@@ -57,6 +57,7 @@
 			step={range.step}
 			value={score}
 			on:input={onInput}
+			on:input
 			on:change
 			on:click
 			aria-label="Star rating: {score} out of {countStars}"
