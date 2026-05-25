@@ -32,3 +32,10 @@ Thumbs.db
 .eslintcache
 *.swp
 *.swo
+
+# Claude Code
+.claude/
+
+dist/
+.svelte-kit/
+build/
